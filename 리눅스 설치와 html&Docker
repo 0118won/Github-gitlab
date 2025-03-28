@@ -1,0 +1,47 @@
+#아파치 다운로드 및 실행
+sudo dnf install -y httpd
+sudo systemctl start httpd		 
+sudo systemctl enable httpd
+
+#방화벽 해체 또는 포트 80 열기
+sudo firewall-cmd --permanent --add-service=http 	
+sudo firewall-cmd --reload
+
+# 도커 다운로드
+sudo dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+sudo dnf install -y docker-ce docker-ce-cli containerd.io	
+
+#도커 시작 및 활성화
+sudo systemctl start docker
+sudo systemctl enable docker
+
+#도커 권한 부여
+sudo usermod -aG docker $USER
+# 적용 위해 재로그인 필요
+
+
+2. HTML 파일 작성
+mkdir -p ~/myweb
+cd ~/myweb
+vim index.html
+
+```
+<html>
+  <head><title>Docker HTML</title></head>
+  <body><h1>Hello from Docker + Rocky Linux!</h1></body>
+</html>
+```
+
+3. Docker로 nginx2 볼륨 마운트
+
+docker run -d -p 8080:80 \		도커 생성과 포트 설정
+  -v ~/myweb:/usr/share/nginx/html:ro \	마운트
+  --name my-nginx nginx2		컨테이너 이름 
+
+4. 도커 명령어
+docker ps              # 실행 중인 컨테이너 확인
+docker stop my-nginx   # 컨테이너 중지
+docker start my-nginx  # 다시 실행
+docker rm my-nginx     # 컨테이너 삭제
+
+http://192.168.32.129:8080/ 접속시 html에 설정한 문구가 나타나면서 사이트가 정상 작동하는 지 확인할 수 있다.
